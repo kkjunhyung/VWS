@@ -14,7 +14,7 @@
 👉 (배포 후 링크 추가)
 
 ```
-https://your-service-url.com
+https://vws-a5fl.onrender.com
 ```
 
 ---
