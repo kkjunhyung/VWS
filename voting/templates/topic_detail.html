@@ -1,0 +1,48 @@
+<a href="{% url 'topic_list' %}">
+    <button>← 주제 목록으로 돌아가기</button>
+</a>
+
+<h1>{{ topic.name }}</h1>
+
+<!-- 메시지 -->
+{% if messages %}
+    <ul style="color:red;">
+        {% for message in messages %}
+            <li>{{ message }}</li>
+        {% endfor %}
+    </ul>
+{% endif %}
+
+{% for item in items %}
+    <div>
+
+        <h3>{{ item.title }}</h3>
+        <p>{{ item.description }}</p>
+
+        {% if item.image %}
+            <img src="{{ item.image.url }}" width="200">
+        {% endif %}
+
+        {% if item.link %}
+            <div style="margin-bottom: 10px;">
+                <a href="{{ item.link }}" target="_blank">
+                    <button>영상 보러가기</button>
+                </a>
+            </div>
+        {% endif %}
+
+        <!-- ⭐ 핵심: POST 방식 -->
+        <form action="{% url 'vote' item.id %}" method="post">
+            {% csrf_token %}
+            <button type="submit">투표하기</button>
+        </form>
+
+    </div>
+    <hr>
+{% endfor %}
+
+<div style="margin-top: 20px;">
+    <a href="{% url 'result' topic.id %}">
+        <button>📊 결과 보기</button>
+    </a>
+</div>

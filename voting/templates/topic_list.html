@@ -1,0 +1,21 @@
+<h1 style="text-align:center;">🗳️ 투표 주제 목록</h1>
+
+<div style="width: 600px; margin: auto;">
+
+{% for topic in topics %}
+    <div style="padding: 15px; border: 1px solid #ccc; margin-bottom: 10px; border-radius: 10px;">
+
+        <h2>{{ topic.name }}</h2>
+
+        <a href="{% url 'topic_detail' topic.id %}">
+            <button>투표하러 가기</button>
+        </a>
+
+        <a href="{% url 'result' topic.id %}">
+            <button>결과 보기</button>
+        </a>
+
+    </div>
+{% endfor %}
+
+</div>

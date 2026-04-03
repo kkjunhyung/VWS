@@ -1,7 +1,20 @@
 from django.contrib import admin
-from .models import VoteItem
+from .models import Topic, VoteItem
 
-class ProjectAdmin(admin.ModelAdmin):
-    fields = ('title', 'description', 'votes', 'image')  # ⭐ 핵심
+class VoteItemInline(admin.TabularInline):
+    model = VoteItem
+    extra = 1
 
-admin.site.register(VoteItem)
+class TopicAdmin(admin.ModelAdmin):
+    list_display = ('name', 'vote_limit', 'is_unlimited')
+    fields = ('name', 'vote_limit', 'is_unlimited')
+
+    inlines = [VoteItemInline]
+
+class VoteItemAdmin(admin.ModelAdmin):
+    list_display = ('title', 'topic', 'votes')
+    list_filter = ('topic',)
+    search_fields = ('title',)
+
+admin.site.register(Topic, TopicAdmin)
+admin.site.register(VoteItem, VoteItemAdmin)

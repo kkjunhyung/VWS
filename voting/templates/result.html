@@ -1,0 +1,119 @@
+<a href="{% url 'topic_list' %}">
+    <button>← 주제 목록으로 돌아가기</button>
+</a>
+
+<h1 style="text-align:center;">{{ topic.name }} 결과</h1>
+
+<!-- 📊 그래프 -->
+<div style="width: 500px; margin: 50px auto;">
+    <canvas id="chart"></canvas>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+const labels = [
+{% for r in ranked_items %}
+    "{{ r.item.title }}",
+{% endfor %}
+];
+
+const data = [
+{% for r in ranked_items %}
+    {{ r.item.votes }},
+{% endfor %}
+];
+
+// 🎨 막대 색상
+const colors = [
+    'rgba(255, 99, 132, 0.7)',
+    'rgba(54, 162, 235, 0.7)',
+    'rgba(255, 206, 86, 0.7)',
+    'rgba(75, 192, 192, 0.7)',
+    'rgba(153, 102, 255, 0.7)',
+    'rgba(255, 159, 64, 0.7)'
+];
+
+new Chart(document.getElementById('chart'), {
+    type: 'bar',
+    data: {
+        labels: labels,
+        datasets: [{
+            label: '투표 결과',
+            data: data,
+            backgroundColor: colors
+        }]
+    },
+    options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+            legend: {
+                display: false
+            }
+        }
+    }
+});
+</script>
+
+<style>
+#chart {
+    height: 300px !important;
+}
+</style>
+
+<div style="text-align:center; margin-top:20px; font-size:18px;">
+    {% for r in ranked_items %}
+
+        {% if r.rank == 1 %}
+            <p style="font-weight:bold; font-size:20px;">
+                {% if r.count > 1 %}
+                    👑 공동 {{ r.rank }}등: {{ r.item.title }} ({{ r.item.votes }}표)
+                {% else %}
+                    👑 {{ r.rank }}등: {{ r.item.title }} ({{ r.item.votes }}표)
+                {% endif %}
+            </p>
+
+        {% elif r.rank == 2 %}
+            <p>
+                {% if r.count > 1 %}
+                    🥈 공동 {{ r.rank }}등: {{ r.item.title }} ({{ r.item.votes }}표)
+                {% else %}
+                    🥈 {{ r.rank }}등: {{ r.item.title }} ({{ r.item.votes }}표)
+                {% endif %}
+            </p>
+
+        {% elif r.rank == 3 %}
+            <p>
+                {% if r.count > 1 %}
+                    🥉 공동 {{ r.rank }}등: {{ r.item.title }} ({{ r.item.votes }}표)
+                {% else %}
+                    🥉 {{ r.rank }}등: {{ r.item.title }} ({{ r.item.votes }}표)
+                {% endif %}
+            </p>
+
+        {% else %}
+            <p>
+                {% if r.count > 1 %}
+                    공동 {{ r.rank }}등: {{ r.item.title }} ({{ r.item.votes }}표)
+                {% else %}
+                    {{ r.rank }}등: {{ r.item.title }} ({{ r.item.votes }}표)
+                {% endif %}
+            </p>
+
+        {% endif %}
+
+    {% endfor %}
+</div>
+
+<!-- 🔄 투표 초기화 -->
+<div style="text-align:center; margin-top:30px;">
+    <form action="{% url 'reset_votes' topic.id %}" method="post">
+        {% csrf_token %}
+        <button 
+            style="background-color:red; color:white; padding:10px 20px; border:none; cursor:pointer;"
+            onclick="return confirm('정말 투표를 초기화하시겠습니까?')">
+            🔄 투표 초기화하기
+        </button>
+    </form>
+</div>
