@@ -109,7 +109,7 @@ python manage.py runserver
 
 ## 👨‍💻 개발자
 
-* 강준형
+* 강준형 (32207033)
 
 ---
 
