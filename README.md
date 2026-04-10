@@ -78,3 +78,46 @@ pip install django
 # 서버 실행
 python manage.py runserver
 
+---
+
+---
+
+## ⚙️ 실행 방법
+
+```bash
+# 가상환경 생성
+python -m venv venv
+
+# 가상환경 실행 (Windows)
+venv\Scripts\activate
+
+# Django 설치
+pip install django
+
+
+## 🎯 프로젝트 목적
+Django 기반 웹 서비스 개발 경험
+사용자 중심 UI/UX 구현
+데이터 시각화 구현 (Chart.js)
+실사용 가능한 투표 시스템 제작
+
+---
+
+## 🔥 향후 개선 방향
+로그인 및 회원 기능
+1인 1표 제한 기능
+댓글 기능
+관리자 기능 강화
+웹 배포 (Render / AWS)
+
+---
+
+## 👨‍💻 개발자
+강준형
+
+---
+
+## 📌 라이선스
+
+본 프로젝트는 학습 및 졸업 작품 용도로 제작되었습니다.
+
