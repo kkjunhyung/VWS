@@ -1,250 +1,96 @@
-# 🗳️ Django Voting Web Service
+# 🗳️ Voting Website (투표 웹사이트)
 
-![Python](https://img.shields.io/badge/Python-3.12-blue)
-![Django](https://img.shields.io/badge/Django-5.2-green)
-![Status](https://img.shields.io/badge/Status-Completed-brightgreen)
-![Chart.js](https://img.shields.io/badge/Chart-Chart.js-orange)
-
-> 주제 기반 투표 시스템 + 실시간 결과 시각화 웹 서비스
+Django 기반의 투표 시스템 웹 애플리케이션입니다.  
+사용자는 투표를 생성하고 참여하며, 결과를 직관적으로 확인할 수 있습니다.
 
 ---
 
-# 🌐 Live Demo
+## 🚀 주요 기능
 
-👉 (배포 후 링크 추가)
+### ✔ 투표 생성
+- 투표 제목 설정
+- 여러 개의 선택지 추가
+- 이미지 첨부
+- 유튜브 링크 첨부 (버튼 클릭 이동 방식)
+- 투표 인원 제한 설정 (또는 무제한)
 
-```
-https://vws-a5fl.onrender.com
-```
+### ✔ 투표 참여
+- 카드 형태 UI 제공
+- 버튼 클릭으로 간편 투표
+- 인원 제한 초과 시 자동 차단
 
----
+### ✔ 결과 확인
+- 공동 순위 알고리즘 적용  
+  → 예: 공동 1위, 공동 2위
+- 🥇🥈🥉 순위 표시
+- Chart.js 기반 막대 그래프
+- 투표 수 시각화
 
-# 📸 Screenshots
+### ✔ UI/UX
+- 카드 스타일 디자인
+- 반응형 웹 (모바일 지원)
+- hover 애니메이션
+- 직관적인 인터페이스
 
-### 🏠 메인 화면
-
-* 투표 주제 목록 확인
-
-### 🗳️ 투표 화면
-
-* 항목 선택 및 투표 진행
-
-### 📊 결과 화면
-
-* 그래프 기반 결과 확인
-* 순위 및 공동 순위 표시
-
----
-
-# 🚀 주요 기능
-
-## ✅ 투표 시스템
-
-* 주제별 투표 진행
-* 항목 선택 후 투표
-* 투표 후 동일 페이지 유지
+### ✔ 기타 기능
+- 투표 초기화 기능 (확인 알림 포함)
+- 이미지 비율 유지 및 자동 리사이징
 
 ---
 
-## ✅ 투표 제한 시스템
+## 🛠️ 기술 스택
 
-* 주제별 최대 투표 수 설정 가능
-* 제한 초과 시 투표 차단
-* “투표수 제한 없음” 옵션 제공
-
----
-
-## ✅ 결과 시각화
-
-* Chart.js 기반 막대 그래프
-* 항목별 투표 수 표시
+- Backend: Django (Python)
+- Frontend: HTML, CSS, JavaScript
+- Chart: Chart.js
+- Database: SQLite3
 
 ---
 
-## ✅ 순위 시스템
+## 📂 프로젝트 구조
 
-* 자동 순위 계산
-* 공동 순위 지원
-
-```
-👑 1등
-🥈 2등
-🥉 3등
-```
-
----
-
-## ✅ 관리자 기능
-
-* Topic 기반 VoteItem 관리
-* Inline UI 제공
-* 검색 및 필터 기능
+voting-website/
+├── voting/
+│ ├── models.py
+│ ├── views.py
+│ ├── templates/
+│ │ ├── topic_list.html
+│ │ ├── topic_detail.html
+│ │ ├── topic_create.html
+│ │ ├── result.html
+├── db.sqlite3
+├── manage.py
 
 ---
 
-## ✅ 투표 초기화
-
-* 관리자/결과 페이지에서 초기화 가능
-
----
-
-# 🏗️ 시스템 구조
-
-## Backend (Django)
-
-* Models: Topic, VoteItem
-* Views: 투표 처리 / 제한 로직 / 결과 계산
-* Admin: 데이터 관리 UI
-
-## Frontend
-
-* HTML / CSS / JavaScript
-* Chart.js (데이터 시각화)
-
----
-
-# 🔄 서비스 흐름
-
-```
-사용자 → 주제 선택 → 투표 → 결과 확인
-```
-
-1. 주제 목록 조회
-2. 투표 항목 선택
-3. 투표 제한 검증
-4. 투표 반영
-5. 결과 그래프 출력
-
----
-
-# 📦 설치 및 실행
-
-## 1️⃣ 프로젝트 클론
+## ⚙️ 실행 방법
 
 ```bash
-git clone https://github.com/your-username/voting-website.git
-cd voting-website
-```
-
----
-
-## 2️⃣ 가상환경 (선택)
-
-```bash
+# 가상환경 생성
 python -m venv venv
-venv\Scripts\activate   # Windows
-```
 
----
+# 가상환경 실행 (Windows)
+venv\Scripts\activate
 
-## 3️⃣ 패키지 설치
+# Django 설치
+pip install django
 
-```bash
-pip install -r requirements.txt
-```
-
----
-
-## 4️⃣ DB 마이그레이션
-
-```bash
-python manage.py makemigrations
-python manage.py migrate
-```
-
----
-
-## 5️⃣ 관리자 계정 생성
-
-```bash
-python manage.py createsuperuser
-```
-
----
-
-## 6️⃣ 서버 실행
-
-```bash
+# 서버 실행
 python manage.py runserver
-```
+🎯 프로젝트 목적
+Django 기반 웹 서비스 개발 경험
+사용자 중심 UI/UX 구현
+데이터 시각화 구현 (Chart.js)
+실사용 가능한 투표 시스템 제작
+🔥 향후 개선 방향
+로그인 및 회원 기능
+1인 1표 제한 기능
+댓글 기능
+관리자 기능 강화
+웹 배포 (Render / AWS)
+👨‍💻 개발자
+강준형
+📌 라이선스
 
-👉 접속:
+본 프로젝트는 학습 및 졸업 작품 용도로 제작되었습니다.
 
-```
-http://127.0.0.1:8000/
-```
-
----
-
-# ⚙️ 관리자 페이지
-
-```
-http://127.0.0.1:8000/admin/
-```
-
-### 기능
-
-* 투표 주제 생성
-* 항목 추가
-* 투표 제한 설정
-* 제한 없음 설정
-
----
-
-# 🧱 데이터 모델
-
-```text
-Topic
- ├── name
- ├── vote_limit
- └── is_unlimited
-
-VoteItem
- ├── topic (FK)
- ├── title
- ├── description
- ├── votes
- ├── image
- └── link
-```
-
----
-
-# 📊 기술 스택
-
-* Python 3.12
-* Django 5.x
-* SQLite (기본 DB)
-* Chart.js
-* HTML / CSS / JavaScript
-
----
-
-# 💡 핵심 구현 포인트
-
-* 주제 기반 투표 구조 설계
-* 투표 제한 / 무제한 로직 분리
-* 공동 순위 알고리즘 구현
-* Chart.js 시각화
-* Django Admin 커스터마이징
-
----
-
-# 🏁 향후 개선
-
-* 사용자 로그인 기반 1인 1표 제한
-* REST API (DRF) 확장
-* AWS / Render 배포
-* 모바일 UI 개선
-
----
-
-# 👨‍💻 Author
-
-* 강준형
-
----
-
-# 📄 License
-
-MIT License
