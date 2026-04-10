@@ -11,12 +11,12 @@ Django 기반의 투표 시스템 웹 애플리케이션입니다.
 - 투표 제목 설정
 - 여러 개의 선택지 추가
 - 이미지 첨부
-- 유튜브 링크 첨부 (버튼 클릭 이동 방식)
+- 유튜브 링크 첨부 (버튼 클릭 이동)
 - 투표 인원 제한 설정 (또는 무제한)
 
 ### ✔ 투표 참여
-- 카드 형태 UI 제공
-- 버튼 클릭으로 간편 투표
+- 카드 UI 기반 투표
+- 버튼 클릭으로 간편 참여
 - 인원 제한 초과 시 자동 차단
 
 ### ✔ 결과 확인
@@ -61,63 +61,47 @@ voting-website/
 ├── db.sqlite3
 ├── manage.py
 
+
 ---
 
 ## ⚙️ 실행 방법
 
 ```bash
-# 가상환경 생성
+# 1. 가상환경 생성
 python -m venv venv
 
-# 가상환경 실행 (Windows)
+# 2. 가상환경 실행 (Windows)
 venv\Scripts\activate
 
-# Django 설치
+# 3. Django 설치
 pip install django
 
-# 서버 실행
+# 4. 서버 실행
 python manage.py runserver
 
 ---
 
----
-
-## ⚙️ 실행 방법
-
-```bash
-# 가상환경 생성
-python -m venv venv
-
-# 가상환경 실행 (Windows)
-venv\Scripts\activate
-
-# Django 설치
-pip install django
-
-
-## 🎯 프로젝트 목적
+🎯 프로젝트 목적
 Django 기반 웹 서비스 개발 경험
 사용자 중심 UI/UX 구현
-데이터 시각화 구현 (Chart.js)
+데이터 시각화 (Chart.js) 적용
 실사용 가능한 투표 시스템 제작
 
 ---
 
-## 🔥 향후 개선 방향
-로그인 및 회원 기능
+🔥 향후 개선 방향
+로그인 및 회원 기능 추가
 1인 1표 제한 기능
 댓글 기능
 관리자 기능 강화
-웹 배포 (Render / AWS)
+클라우드 배포 (AWS / Render)
 
 ---
 
-## 👨‍💻 개발자
+👨‍💻 개발자
 강준형
 
 ---
-
-## 📌 라이선스
+📌 라이선스
 
 본 프로젝트는 학습 및 졸업 작품 용도로 제작되었습니다.
-
