@@ -1,37 +1,140 @@
-<a href="{% url 'topic_list' %}">
-    <button>← 주제 목록으로 돌아가기</button>
-</a>
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<title>투표 결과</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<h1 style="text-align:center;">{{ topic.name }} 결과</h1>
+<style>
+body {
+    font-family:'Segoe UI',Arial,sans-serif;
+    background: linear-gradient(135deg,#f5f7fa,#e4ecf7);
+}
+.container {
+    max-width:800px;
+    margin:30px auto;
+    padding:20px;
+}
+.title {
+    text-align:center;
+    margin-bottom:30px;
+}
+.card {
+    background:white;
+    padding:20px;
+    margin-bottom:15px;
+    border-radius:16px;
+    box-shadow:0 4px 15px rgba(0,0,0,0.1);
+}
+.rank {
+    font-weight:bold;
+    margin-bottom:5px;
+    font-size:18px;
+}
+.gold { color: #f1c40f; }
+.silver { color: #bdc3c7; }
+.bronze { color: #cd7f32; }
 
-<!-- 📊 그래프 -->
-<div style="width: 500px; margin: 50px auto;">
-    <canvas id="chart"></canvas>
-</div>
+canvas {
+    margin-top:30px;
+}
+.back {
+    display:block;
+    text-align:center;
+    margin-top:30px;
+    color:#3498db;
+}
+</style>
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+
+<body>
+<div class="container">
+
+    <div class="title">
+        <h1>📊 {{ topic.name }} 결과</h1>
+    </div>
+
+    <!-- ✅ 순위 출력 -->
+    {% for entry in ranked_items %}
+    <div class="card">
+
+        <div class="rank
+            {% if entry.rank == 1 %}gold
+            {% elif entry.rank == 2 %}silver
+            {% elif entry.rank == 3 %}bronze
+            {% endif %}
+        ">
+
+            {% if entry.rank == 1 %}
+                🥇
+            {% elif entry.rank == 2 %}
+                🥈
+            {% elif entry.rank == 3 %}
+                🥉
+            {% else %}
+                🏅
+            {% endif %}
+
+            {% if entry.count > 1 %}
+                공동 {{ entry.rank }}위
+            {% else %}
+                {{ entry.rank }}위
+            {% endif %}
+        </div>
+
+        <div>{{ entry.item.title }} ({{ entry.item.votes }}표)</div>
+
+    </div>
+    {% endfor %}
+
+    <!-- ✅ 그래프 -->
+    <canvas id="chart"></canvas>
+    <!-- 🔄 투표 초기화 버튼 -->
+<form method="POST" action="{% url 'reset_votes' topic.id %}" style="text-align:center; margin-top:20px;">
+    {% csrf_token %}
+    <button type="submit"
+        onclick="return confirm('정말 투표를 초기화하시겠습니까?');"
+        style="
+        padding:10px 20px;
+        border:none;
+        border-radius:10px;
+        background: linear-gradient(135deg,#e74c3c,#c0392b);
+        color:white;
+        font-size:15px;
+        cursor:pointer;
+    ">
+        🔄 투표 초기화
+    </button>
+</form>
+
+    <a href="{% url 'topic_list' %}" class="back">← 목록으로</a>
+
+</div>
 
 <script>
 const labels = [
-{% for r in ranked_items %}
-    "{{ r.item.title }}",
+{% for entry in ranked_items %}
+    "{{ entry.item.title }}",
 {% endfor %}
 ];
 
 const data = [
-{% for r in ranked_items %}
-    {{ r.item.votes }},
+{% for entry in ranked_items %}
+    {{ entry.item.votes }},
 {% endfor %}
 ];
 
-// 🎨 막대 색상
+// 🎨 막대 색상 각각 다르게
 const colors = [
-    'rgba(255, 99, 132, 0.7)',
-    'rgba(54, 162, 235, 0.7)',
-    'rgba(255, 206, 86, 0.7)',
-    'rgba(75, 192, 192, 0.7)',
-    'rgba(153, 102, 255, 0.7)',
-    'rgba(255, 159, 64, 0.7)'
+    'rgba(241, 196, 15, 0.7)',   // 금
+    'rgba(189, 195, 199, 0.7)',  // 은
+    'rgba(205, 127, 50, 0.7)',   // 동
+    'rgba(52, 152, 219, 0.7)',
+    'rgba(155, 89, 182, 0.7)',
+    'rgba(46, 204, 113, 0.7)',
+    'rgba(231, 76, 60, 0.7)'
 ];
 
 new Chart(document.getElementById('chart'), {
@@ -39,81 +142,26 @@ new Chart(document.getElementById('chart'), {
     data: {
         labels: labels,
         datasets: [{
-            label: '투표 결과',
+            label: '투표 수',
             data: data,
-            backgroundColor: colors
+            backgroundColor: colors,
+            borderWidth: 1
         }]
     },
     options: {
         responsive: true,
-        maintainAspectRatio: false,
-        plugins: {
-            legend: {
-                display: false
+        scales: {
+            y: {
+                beginAtZero: true,
+                ticks: { stepSize: 1 }
             }
+        },
+        plugins: {
+            legend: { display: false }
         }
     }
 });
 </script>
 
-<style>
-#chart {
-    height: 300px !important;
-}
-</style>
-
-<div style="text-align:center; margin-top:20px; font-size:18px;">
-    {% for r in ranked_items %}
-
-        {% if r.rank == 1 %}
-            <p style="font-weight:bold; font-size:20px;">
-                {% if r.count > 1 %}
-                    👑 공동 {{ r.rank }}등: {{ r.item.title }} ({{ r.item.votes }}표)
-                {% else %}
-                    👑 {{ r.rank }}등: {{ r.item.title }} ({{ r.item.votes }}표)
-                {% endif %}
-            </p>
-
-        {% elif r.rank == 2 %}
-            <p>
-                {% if r.count > 1 %}
-                    🥈 공동 {{ r.rank }}등: {{ r.item.title }} ({{ r.item.votes }}표)
-                {% else %}
-                    🥈 {{ r.rank }}등: {{ r.item.title }} ({{ r.item.votes }}표)
-                {% endif %}
-            </p>
-
-        {% elif r.rank == 3 %}
-            <p>
-                {% if r.count > 1 %}
-                    🥉 공동 {{ r.rank }}등: {{ r.item.title }} ({{ r.item.votes }}표)
-                {% else %}
-                    🥉 {{ r.rank }}등: {{ r.item.title }} ({{ r.item.votes }}표)
-                {% endif %}
-            </p>
-
-        {% else %}
-            <p>
-                {% if r.count > 1 %}
-                    공동 {{ r.rank }}등: {{ r.item.title }} ({{ r.item.votes }}표)
-                {% else %}
-                    {{ r.rank }}등: {{ r.item.title }} ({{ r.item.votes }}표)
-                {% endif %}
-            </p>
-
-        {% endif %}
-
-    {% endfor %}
-</div>
-
-<!-- 🔄 투표 초기화 -->
-<div style="text-align:center; margin-top:30px;">
-    <form action="{% url 'reset_votes' topic.id %}" method="post">
-        {% csrf_token %}
-        <button 
-            style="background-color:red; color:white; padding:10px 20px; border:none; cursor:pointer;"
-            onclick="return confirm('정말 투표를 초기화하시겠습니까?')">
-            🔄 투표 초기화하기
-        </button>
-    </form>
-</div>
+</body>
+</html>

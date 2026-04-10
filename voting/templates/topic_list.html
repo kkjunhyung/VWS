@@ -1,21 +1,135 @@
-<h1 style="text-align:center;">🗳️ 투표 주제 목록</h1>
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>투표 목록</title>
 
-<div style="width: 600px; margin: auto;">
+    <style>
+        body {
+            font-family: 'Segoe UI', Arial, sans-serif;
+            background-color: #f5f7fa;
+        }
 
-{% for topic in topics %}
-    <div style="padding: 15px; border: 1px solid #ccc; margin-bottom: 10px; border-radius: 10px;">
+        .container {
+            width: 600px;
+            margin: 50px auto;
+        }
 
-        <h2>{{ topic.name }}</h2>
+        .title {
+            text-align: center;
+            margin-bottom: 40px;
+        }
 
-        <a href="{% url 'topic_detail' topic.id %}">
-            <button>투표하러 가기</button>
-        </a>
+        .title h1 {
+            font-size: 28px;
+            font-weight: bold;
+            letter-spacing: 1px;
+            color: #2c3e50;
+        }
 
-        <a href="{% url 'result' topic.id %}">
-            <button>결과 보기</button>
-        </a>
+        .card {
+            background: white;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 12px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+            transition: all 0.2s ease;
+            position: relative; /* 🔥 중요 */
+        }
 
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 6px 18px rgba(0,0,0,0.15);
+        }
+
+        .card h2 {
+            margin-bottom: 12px;
+            color: #34495e;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 8px 14px;
+            margin-right: 10px;
+            border-radius: 6px;
+            background-color: #3498db;
+            color: white;
+            text-decoration: none;
+            transition: all 0.2s ease;
+        }
+
+        .btn:hover {
+            background-color: #2980b9;
+            transform: scale(1.05);
+        }
+
+        .create-btn {
+            width: 100%;
+            padding: 14px;
+            background-color: #2ecc71;
+            font-size: 16px;
+            border-radius: 10px;
+            border: none;
+            color: white;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .create-btn:hover {
+            background-color: #27ae60;
+            transform: scale(1.02);
+        }
+
+        /* 🔥 삭제 버튼 */
+        .delete-btn {
+            position: absolute;
+            bottom: 15px;
+            right: 15px;
+            border: none;
+            background: none;
+            cursor: pointer;
+            font-size: 20px;
+            color: red;
+            transition: transform 0.2s ease;
+        }
+
+        .delete-btn:hover {
+            transform: scale(1.2);
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <div class="title">
+        <h1>🗳️ 투표 주제 목록</h1>
     </div>
-{% endfor %}
+
+    {% for topic in topics %}
+        <div class="card">
+            <h2>{{ topic.name }}</h2>
+
+            <a href="{% url 'topic_detail' topic.id %}" class="btn">투표하러 가기</a>
+            <a href="{% url 'result' topic.id %}" class="btn">결과 보기</a>
+
+            <!-- 🔥 삭제 버튼 -->
+            <form action="{% url 'topic_delete' topic.id %}" method="POST"
+                  onsubmit="return confirm('투표 목록을 삭제하시겠습니까?');">
+                {% csrf_token %}
+                <button type="submit" class="delete-btn">🗑️</button>
+            </form>
+        </div>
+    {% endfor %}
+
+    <div style="margin-top:20px;">
+        <a href="{% url 'topic_create' %}">
+            <button class="create-btn">➕ 투표 생성하기</button>
+        </a>
+    </div>
 
 </div>
+
+</body>
+</html>

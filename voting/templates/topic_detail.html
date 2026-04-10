@@ -1,48 +1,188 @@
-<a href="{% url 'topic_list' %}">
-    <button>← 주제 목록으로 돌아가기</button>
-</a>
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<title>투표 상세</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<h1>{{ topic.name }}</h1>
+<style>
+body {
+    font-family:'Segoe UI',Arial,sans-serif;
+    background: linear-gradient(135deg,#f5f7fa,#e4ecf7);
+    margin:0;
+}
 
-<!-- 메시지 -->
-{% if messages %}
-    <ul style="color:red;">
-        {% for message in messages %}
-            <li>{{ message }}</li>
-        {% endfor %}
-    </ul>
-{% endif %}
+/* 컨테이너 */
+.container {
+    width:650px;
+    max-width:95%;
+    margin:40px auto;
+}
 
-{% for item in items %}
-    <div>
+/* 제목 */
+.title {
+    text-align:center;
+    margin-bottom:35px;
+}
+.title h1 {
+    font-size:28px;
+    color:#2c3e50;
+}
 
-        <h3>{{ item.title }}</h3>
-        <p>{{ item.description }}</p>
+/* 카드 */
+.card {
+    background:white;
+    padding:20px;
+    margin-bottom:20px;
+    border-radius:16px;
+    box-shadow:0 4px 15px rgba(0,0,0,0.1);
+    transition: all 0.25s ease;
+}
+.card:hover {
+    transform: translateY(-5px);
+    box-shadow:0 8px 25px rgba(0,0,0,0.18);
+}
 
-        {% if item.image %}
-            <img src="{{ item.image.url }}" width="200">
-        {% endif %}
+.card h3 {
+    margin-bottom:8px;
+}
 
-        {% if item.link %}
-            <div style="margin-bottom: 10px;">
-                <a href="{{ item.link }}" target="_blank">
-                    <button>영상 보러가기</button>
-                </a>
-            </div>
-        {% endif %}
+/* 이미지 */
+img {
+    width: 100%;
+    max-height: 300px;
+    object-fit: contain;
+    border-radius: 10px;
+    margin-top: 10px;
+    background: #f8f9fa;
+    padding: 5px;   /* 🔥 여백 추가 */
+}
 
-        <!-- ⭐ 핵심: POST 방식 -->
-        <form action="{% url 'vote' item.id %}" method="post">
-            {% csrf_token %}
-            <button type="submit">투표하기</button>
-        </form>
+/* 🎥 유튜브 반응형 */
+.video-wrapper {
+    position: relative;
+    width: 100%;
+    padding-bottom: 56.25%;
+    margin-top: 10px;
+}
+.video-wrapper iframe {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    border-radius: 10px;
+}
 
+/* 버튼 */
+.vote-btn {
+    margin-top:15px;
+    width:100%;
+    padding:12px;
+    border:none;
+    border-radius:10px;
+    background: linear-gradient(135deg,#3498db,#2980b9);
+    color:white;
+    font-size:15px;
+    cursor:pointer;
+    transition: all 0.2s ease;
+}
+.vote-btn:hover {
+    transform:scale(1.03);
+    box-shadow:0 4px 12px rgba(0,0,0,0.2);
+}
+.vote-btn:disabled {
+    background:#95a5a6;
+    cursor:not-allowed;
+}
+
+/* 메시지 */
+.vote-status {
+    display:block;
+    margin-bottom:10px;
+    font-weight:bold;
+}
+.vote-status.error { color:red; }
+.vote-status.success { color:green; }
+
+/* 뒤로가기 */
+.back {
+    display:block;
+    margin-top:25px;
+    text-align:center;
+    color:#3498db;
+    text-decoration:none;
+}
+.back:hover {
+    text-decoration:underline;
+}
+
+/* 모바일 */
+@media(max-width:600px){
+    .container {
+        margin:20px auto;
+    }
+}
+</style>
+
+</head>
+<body>
+
+<div class="container">
+
+    <!-- 제목 -->
+    <div class="title">
+        <h1>🗳️ {{ topic.name }}</h1>
     </div>
-    <hr>
-{% endfor %}
 
-<div style="margin-top: 20px;">
-    <a href="{% url 'result' topic.id %}">
-        <button>📊 결과 보기</button>
-    </a>
+    <!-- 메시지 -->
+    {% if messages %}
+        {% for message in messages %}
+            <span class="vote-status {% if message.tags == 'error' %}error{% else %}success{% endif %}">
+                {{ message }}
+            </span>
+        {% endfor %}
+    {% endif %}
+
+    <!-- 카드 반복 -->
+    {% for item in items %}
+        <div class="card">
+
+            <h3>{{ item.title }}</h3>
+            <p>{{ item.description }}</p>
+
+            <!-- 이미지 -->
+            {% if item.image %}
+                <img src="{{ item.image.url }}">
+            {% endif %}
+
+            <!-- 유튜브 -->
+            {% if item.link %}
+                <a href="{{ item.link }}" target="_blank" class="video-btn">
+                    🎬 영상 확인하기
+                </a>
+            {% endif %}
+
+            <!-- 투표 버튼 -->
+            <form action="{% url 'vote' item.id %}" method="POST">
+                {% csrf_token %}
+
+                {% if not topic.is_unlimited and topic.vote_limit and total_votes >= topic.vote_limit %}
+                    <button type="submit" class="vote-btn" disabled>
+                        투표 마감
+                    </button>
+                {% else %}
+                    <button type="submit" class="vote-btn">
+                        투표하기
+                    </button>
+                {% endif %}
+            </form>
+
+        </div>
+    {% endfor %}
+
+    <!-- 뒤로가기 -->
+    <a href="{% url 'topic_list' %}" class="back">← 목록으로</a>
+
 </div>
+
+</body>
+</html>

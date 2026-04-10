@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<title>투표 생성하기</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+body {
+    font-family:'Segoe UI',Arial,sans-serif;
+    background: linear-gradient(135deg,#f5f7fa,#e4ecf7);
+    margin:0;
+    padding:0;
+}
+
+.container {
+    max-width: 700px;
+    margin: 30px auto;
+    background:white;
+    padding:20px;
+    border-radius:16px;
+    box-shadow:0 4px 15px rgba(0,0,0,0.1);
+}
+
+h1 {
+    text-align:center;
+    margin-bottom:20px;
+}
+
+.form-group {
+    margin-bottom:15px;
+}
+
+label {
+    font-weight:bold;
+}
+
+input[type=text], input[type=number], input[type=url], textarea {
+    width:100%;
+    padding:8px;
+    margin-top:5px;
+    border-radius:8px;
+    border:1px solid #ccc;
+    box-sizing:border-box;
+}
+
+textarea {
+    resize: vertical;
+}
+
+button {
+    padding:10px 20px;
+    border:none;
+    border-radius:10px;
+    cursor:pointer;
+    background: linear-gradient(135deg,#3498db,#2980b9);
+    color:white;
+    font-size:16px;
+    transition:0.2s;
+}
+
+button:hover {
+    transform: scale(1.03);
+}
+
+.option-card {
+    border:1px solid #ccc;
+    border-radius:12px;
+    padding:15px;
+    margin-bottom:10px;
+    position: relative;
+    transition: all 0.25s ease;
+}
+
+.option-card:hover {
+    box-shadow:0 4px 12px rgba(0,0,0,0.15);
+}
+
+.remove-btn {
+    position:absolute;
+    top:10px;
+    right:10px;
+    background:red;
+    font-weight:bold;
+    border-radius:50%;
+    width:25px;
+    height:25px;
+    color:white;
+}
+
+.checkbox-group {
+    display:flex;
+    align-items:center;
+    gap:10px;
+    margin-top:5px;
+}
+
+/* 🔥 버튼 중앙 정렬 핵심 */
+.submit-wrapper {
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+}
+
+.submit-wrapper button {
+    width: 60%;
+}
+
+/* 🔙 목록 버튼 */
+.back-btn {
+    display:block;
+    text-align:center;
+    margin-top:15px;
+    padding:10px;
+    border-radius:10px;
+    background:#ecf0f1;
+    color:#2c3e50;
+    text-decoration:none;
+    font-weight:bold;
+    transition:0.2s;
+}
+
+.back-btn:hover {
+    background:#d0d7de;
+}
+
+/* 📱 모바일 */
+@media(max-width:768px){
+    .container{margin:15px;}
+    .submit-wrapper button{width:100%;}
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+    <h1>📝 투표 생성하기</h1>
+
+    <form method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+
+        <!-- 제목 -->
+        <div class="form-group">
+            <label>투표 제목</label>
+            <input type="text" name="title" required>
+        </div>
+
+        <!-- 투표 제한 -->
+        <div class="form-group">
+            <label>투표 제한 수</label>
+            <input type="number" id="vote_limit" name="vote_limit" min="1">
+
+            <div class="checkbox-group">
+                <input type="checkbox" id="is_unlimited" name="is_unlimited">
+                <label for="is_unlimited">제한 없음</label>
+            </div>
+        </div>
+
+        <hr>
+
+        <!-- 옵션 -->
+        <h3>옵션 추가</h3>
+        <div id="options-container"></div>
+
+        <button type="button" onclick="addOption()">➕ 옵션 추가하기</button>
+
+        <hr>
+
+        <!-- 🔥 중앙 정렬된 생성 버튼 -->
+        <div class="submit-wrapper">
+            <button type="submit">✅ 투표 생성하기</button>
+        </div>
+
+        <!-- 🔙 목록 -->
+        <a href="{% url 'topic_list' %}" class="back-btn">← 목록으로</a>
+    </form>
+</div>
+
+<script>
+let optionIndex = 0;
+
+function addOption(title='', description='', link='') {
+    const container = document.getElementById('options-container');
+
+    const card = document.createElement('div');
+    card.className = 'option-card';
+
+    card.innerHTML = `
+        <button type="button" class="remove-btn" onclick="removeOption(this)">×</button>
+
+        <div class="form-group">
+            <label>옵션 제목</label>
+            <input type="text" name="options" required>
+        </div>
+
+        <div class="form-group">
+            <label>설명</label>
+            <textarea name="descriptions"></textarea>
+        </div>
+
+        <div class="form-group">
+            <label>링크 (선택)</label>
+            <input type="url" name="links">
+        </div>
+
+        <div class="form-group">
+            <label>이미지 (선택)</label>
+            <input type="file" name="images">
+        </div>
+    `;
+
+    container.appendChild(card);
+}
+
+// 기본 2개
+addOption();
+addOption();
+
+// 삭제
+function removeOption(btn) {
+    btn.parentNode.remove();
+}
+
+// 제한 없음
+const voteLimitInput = document.getElementById('vote_limit');
+const isUnlimitedCheckbox = document.getElementById('is_unlimited');
+
+isUnlimitedCheckbox.addEventListener('change', function() {
+    voteLimitInput.disabled = this.checked;
+});
+</script>
+
+</body>
+</html>
